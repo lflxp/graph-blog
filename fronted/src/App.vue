@@ -1,28 +1,46 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+  <a-locale-provider :locale="locale">
+    <div id="app">
+      <router-view/>
+    </div>
+  </a-locale-provider>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import zhCN from 'ant-design-vue/lib/locale-provider/zh_CN'
+import { deviceEnquire, DEVICE_TYPE } from '@/utils/device'
 
 export default {
-  name: 'app',
-  components: {
-    HelloWorld
+  data () {
+    return {
+      locale: zhCN
+    }
+  },
+  mounted () {
+    const { $store } = this
+    deviceEnquire(deviceType => {
+      switch (deviceType) {
+        case DEVICE_TYPE.DESKTOP:
+          $store.commit('TOGGLE_DEVICE', 'desktop')
+          $store.dispatch('setSidebar', true)
+          break
+        case DEVICE_TYPE.TABLET:
+          $store.commit('TOGGLE_DEVICE', 'tablet')
+          $store.dispatch('setSidebar', false)
+          break
+        case DEVICE_TYPE.MOBILE:
+        default:
+          $store.commit('TOGGLE_DEVICE', 'mobile')
+          $store.dispatch('setSidebar', true)
+          break
+      }
+      console.log('deviceType', deviceType)
+    })
   }
 }
 </script>
-
 <style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+  #app {
+    height: 100%;
+  }
 </style>
