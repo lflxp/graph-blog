@@ -324,6 +324,12 @@ export const asyncRouterMap = [
             name: '测试',
             component: () => import('@/views/blog/test'),
             meta: { title: '测试', keepAlive: true, permission: [ 'dashboard' ] }
+          },
+          {
+            path: '/blog/word',
+            name: '文字云',
+            component: () => import('@/views/blog/wordcloud'),
+            meta: { title: '文字云', keepAlive: true, permission: [ 'dashboard' ] }
           }
         ]
       }

@@ -10,7 +10,7 @@ https://vue.ant.design/docs/vue/use-with-vue-cli-cn/
 ## neo4j
 
 ```
-sudo docker run -d -p 7474:7474 -p 7687:7687 -v /data/neo4j/data:/data neo4j
+sudo docker run --name=neo4j -d -p 7474:7474 -p 7687:7687 -v /data/neo4j/data:/data neo4j
 
 ```
 
@@ -26,3 +26,9 @@ sudo apt-get install gcc-5
 # install
 
 bee run -gendoc=true -downdoc=true
+
+# todo
+
+1. 查询
+2. 输入
+3. 关系选择
