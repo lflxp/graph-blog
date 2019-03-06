@@ -1,0 +1,125 @@
+package controllers
+
+import (
+	"encoding/json"
+	"fmt"
+
+	"github.com/lflxp/graph-blog/backends/models"
+	db "github.com/lflxp/graph-blog/backends/utils"
+)
+
+// Operations about Bucket
+type DbController struct {
+	BaseController
+}
+
+// @Title CreateBucket
+// @Description 添加一个完整的数据 表、key、value
+// @Param	body		body 	models.Bucket	true		"body for Bucket content"
+// @Success 200 {int} models.Bucket.Key
+// @Failure 403 body is empty
+// @router /kv [post]
+func (u *DbController) Post() {
+	var user models.Bucket
+	json.Unmarshal(u.Ctx.Input.RequestBody, &user)
+	err := db.AddKeyValueByBucketName(user.Tablename, user.Key, user.Value)
+	if err != nil {
+		u.Data["json"] = err.Error()
+	} else {
+		u.Data["json"] = fmt.Sprintf("add %s %s success", user.Tablename, user.Key)
+	}
+	u.ServeJSON()
+}
+
+// @Title CreateUser
+// @Description 只添加表
+// @Param	body		body 	models.Bucket	true		"Tablename字段中只有tablename字段会被用到"
+// @Success 200 {int} models.Tablename
+// @Failure 403 body is empty
+// @router /tables [post]
+func (u *DbController) AddTables() {
+	var user models.Bucket
+	json.Unmarshal(u.Ctx.Input.RequestBody, &user)
+	fmt.Println(user)
+	err := db.CreateBucket(user.Tablename)
+	if err != nil {
+		u.Data["json"] = err
+	} else {
+		u.Data["json"] = fmt.Sprintf("add table %s success", user.Tablename)
+	}
+	u.ServeJSON()
+}
+
+// @Title GetAllTables
+// @Description 获取所有表的数据
+// @Success 200 {string} success
+// @router /tables [get]
+func (u *DbController) GetAllTables() {
+	data, err := db.GetAllTables()
+	if err != nil {
+		u.Data["json"] = err.Error()
+	} else {
+		u.Data["json"] = data
+	}
+	u.ServeJSON()
+}
+
+// @Title GetAll
+// @Description 遍历指定表的所有数据
+// @Param  tablename  path  string true  "name of table"
+// @Success 200 {object} models.Tablename
+// @router /:tablename [get]
+func (u *DbController) GetDataByTablename() {
+	tablename := u.GetString(":tablename")
+	if tablename != "" {
+		data, err := db.GetAllByTables(tablename)
+		if err != nil {
+			u.Data["json"] = err.Error()
+		} else {
+			u.Data["json"] = data
+		}
+	} else {
+		u.Data["json"] = "tablename or key is none"
+	}
+	u.ServeJSON()
+}
+
+// @Title Get
+// @Description get user by uid
+// @Param	tablename path 	string	true		"The key for staticblock"
+// @Param	key		path 	string	true		"The key for staticblock"
+// @Success 200 {object} models.Bucket
+// @Failure 403 :tablename is empty
+// @router /:tablename/:key [get]
+func (u *DbController) Get() {
+	tablename := u.GetString(":tablename")
+	key := u.GetString(":key")
+	if tablename != "" && key != "" {
+		data, err := db.GetValueByBucketName(tablename, key)
+		if err != nil {
+			u.Data["json"] = err.Error()
+		} else {
+			u.Data["json"] = string(data)
+		}
+	} else {
+		u.Data["json"] = "tablename or key is none"
+	}
+	u.ServeJSON()
+}
+
+// @Title Delete
+// @Description delete the Table
+// @Param	tablename		path 	string	true		"The uid you want to delete"
+// @Success 200 {string} delete success!
+// @Failure 403 tablename is empty
+// @router /:tablename [delete]
+func (u *DbController) Delete() {
+	tablename := u.GetString(":tablename")
+	err := db.DeleteBucket(tablename)
+	if err != nil {
+		u.Data["json"] = err.Error()
+	} else {
+		u.Data["json"] = "delete success!"
+	}
+	u.ServeJSON()
+}

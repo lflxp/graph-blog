@@ -321,9 +321,16 @@ export const asyncRouterMap = [
         children: [
           {
             path: '/blog/test',
-            name: '测试',
+            name: '文章录入',
             component: () => import('@/views/blog/test'),
-            meta: { title: '测试', keepAlive: true, permission: [ 'dashboard' ] }
+            meta: { title: '文章录入', keepAlive: true, permission: [ 'dashboard' ] }
+          },
+          {
+            path: '/blog/test',
+            name: '文章展示',
+            hidden: false,
+            component: () => import('@/views/blog/test'),
+            meta: { title: '文章展示', keepAlive: true, permission: [ 'dashboard' ] }
           },
           {
             path: '/blog/word',

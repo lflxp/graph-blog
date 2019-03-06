@@ -15,6 +15,160 @@
     },
     "basePath": "/v1",
     "paths": {
+        "/db/kv": {
+            "post": {
+                "tags": [
+                    "db"
+                ],
+                "description": "添加一个完整的数据 表、key、value",
+                "operationId": "DbController.CreateBucket",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body for Bucket content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Bucket"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{int} models.Bucket.Key"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+        "/db/tables": {
+            "get": {
+                "tags": [
+                    "db"
+                ],
+                "description": "获取所有表的数据",
+                "operationId": "DbController.GetAllTables",
+                "responses": {
+                    "200": {
+                        "description": "{string} success"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "db"
+                ],
+                "description": "只添加表",
+                "operationId": "DbController.CreateUser",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "Tablename字段中只有tablename字段会被用到",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Bucket"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{int} models.Tablename"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+        "/db/{tablename}": {
+            "get": {
+                "tags": [
+                    "db"
+                ],
+                "description": "遍历指定表的所有数据",
+                "operationId": "DbController.GetAll",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "tablename",
+                        "description": "name of table",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Tablename"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "db"
+                ],
+                "description": "delete the Table",
+                "operationId": "DbController.Delete",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "tablename",
+                        "description": "The uid you want to delete",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{string} delete success!"
+                    },
+                    "403": {
+                        "description": "tablename is empty"
+                    }
+                }
+            }
+        },
+        "/db/{tablename}/{key}": {
+            "get": {
+                "tags": [
+                    "db"
+                ],
+                "description": "get user by uid",
+                "operationId": "DbController.Get",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "tablename",
+                        "description": "The key for staticblock",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "path",
+                        "name": "key",
+                        "description": "The key for staticblock",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Bucket"
+                        }
+                    },
+                    "403": {
+                        "description": ":tablename is empty"
+                    }
+                }
+            }
+        },
         "/neo4j/search": {
             "post": {
                 "tags": [
@@ -45,6 +199,21 @@
         }
     },
     "definitions": {
+        "models.Bucket": {
+            "title": "Bucket",
+            "type": "object",
+            "properties": {
+                "key": {
+                    "type": "string"
+                },
+                "tablename": {
+                    "type": "string"
+                },
+                "value": {
+                    "type": "string"
+                }
+            }
+        },
         "models.Neo4jPost": {
             "title": "Neo4jPost",
             "type": "object",
@@ -53,12 +222,20 @@
                     "type": "string"
                 }
             }
+        },
+        "models.Tablename": {
+            "title": "Tablename",
+            "type": "object"
         }
     },
     "tags": [
         {
             "name": "neo4j",
             "description": "后端系统认证\n"
+        },
+        {
+            "name": "db",
+            "description": "Operations about Bucket\n"
         }
     ]
 }

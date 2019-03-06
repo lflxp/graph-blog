@@ -21,6 +21,12 @@ func init() {
 			),
 			beego.NSRouter("/*", &controllers.BaseController{}, "options:Options"),
 		),
+		beego.NSNamespace("/db",
+			beego.NSInclude(
+				&controllers.DbController{},
+			),
+			beego.NSRouter("/*", &controllers.BaseController{}, "options:Options"),
+		),
 	)
-	beego.AddNamespace(ns)	
+	beego.AddNamespace(ns)
 }
